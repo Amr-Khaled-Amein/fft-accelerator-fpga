@@ -1,0 +1,4 @@
+# test and host scripts, so github shows this as a verilog project
+tools/*.py linguist-detectable=false
+# the twiddle generator is part of the design, keep it counted
+tools/gen_twiddle.py linguist-detectable=true

@@ -1,0 +1,5 @@
+build/
+fft/impl/
+*.gprj.user
+*.vcd
+__pycache__/

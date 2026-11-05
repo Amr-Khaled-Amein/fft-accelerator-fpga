@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="580" viewBox="0 0 1100 580" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+  </defs>
+  <rect width="1100" height="580" fill="#ffffff"/>
+
+  <!-- stage bands -->
+  <g font-weight="bold" font-size="14" fill="#fff" text-anchor="middle">
+    <rect x="20"  y="14" width="185" height="26" rx="4" fill="#4c78a8"/><text x="112" y="32">read</text>
+    <rect x="225" y="14" width="225" height="26" rx="4" fill="#9467bd"/><text x="337" y="32">s1  multiply</text>
+    <rect x="470" y="14" width="215" height="26" rx="4" fill="#f58518"/><text x="577" y="32">s2  add / sub</text>
+    <rect x="705" y="14" width="190" height="26" rx="4" fill="#54a24b"/><text x="800" y="32">s3  scale + clip</text>
+    <rect x="915" y="14" width="165" height="26" rx="4" fill="#2a9d8f"/><text x="997" y="32">write</text>
+  </g>
+
+  <!-- pipeline registers -->
+  <g fill="#e8e8e8" stroke="#777">
+    <rect x="208" y="55" width="10" height="225"/>
+    <rect x="455" y="55" width="10" height="225"/>
+    <rect x="690" y="55" width="10" height="225"/>
+    <rect x="900" y="55" width="10" height="225"/>
+  </g>
+  <g font-size="11" fill="#555" text-anchor="middle">
+    <text x="213" y="296">bsram / rom</text><text x="460" y="296">s1 regs</text>
+    <text x="695" y="296">s2 regs</text><text x="905" y="296">s3 regs</text>
+  </g>
+
+  <!-- read -->
+  <g fill="#f0f7ee" stroke="#54a24b" stroke-width="1.3">
+    <rect x="28" y="62" width="88" height="40" rx="3"/>
+    <rect x="28" y="118" width="88" height="40" rx="3"/>
+  </g>
+  <text x="72" y="87" text-anchor="middle" font-size="12">bank 0</text>
+  <text x="72" y="143" text-anchor="middle" font-size="12">bank 1</text>
+  <path d="M140,60 L170,72 L170,148 L140,160 Z" fill="#f7f7f7" stroke="#444" stroke-width="1.3"/>
+  <text x="155" y="114" text-anchor="middle" font-size="10.5">swap</text>
+  <g stroke="#333" stroke-width="1.3" fill="none">
+    <path d="M116,82 L138,82" marker-end="url(#a)"/>
+    <path d="M116,138 L138,138" marker-end="url(#a)"/>
+  </g>
+  <rect x="28" y="200" width="142" height="50" rx="3" fill="#eef4fb" stroke="#4c78a8" stroke-width="1.3"/>
+  <text x="99" y="221" text-anchor="middle" font-size="12">twiddle rom</text>
+  <text x="99" y="239" text-anchor="middle" font-size="11" fill="#555">W = c - js</text>
+  <text x="30" y="186" font-size="10.5" fill="#555">a is in bank xor(addr)</text>
+
+  <!-- a goes around the multiplier -->
+  <g stroke="#333" stroke-width="1.5" fill="none">
+    <path d="M170,80 L488,80" marker-end="url(#a)"/>
+    <path d="M170,140 L238,140" marker-end="url(#a)"/>
+    <path d="M170,225 L238,225" marker-end="url(#a)"/>
+  </g>
+  <text x="178" y="74" font-size="12" font-weight="bold">a</text>
+  <text x="178" y="134" font-size="12" font-weight="bold">b</text>
+  <text x="176" y="219" font-size="12" font-weight="bold">c, s</text>
+
+  <!-- s1 -->
+  <rect x="240" y="105" width="200" height="150" rx="3" fill="#f5f0fa" stroke="#9467bd" stroke-width="1.4"/>
+  <g font-size="12" fill="#333">
+    <text x="252" y="130" font-weight="bold">complex multiply</text>
+    <text x="252" y="154">tr = br*c + bi*s</text>
+    <text x="252" y="174">ti = bi*c - br*s</text>
+    <text x="252" y="200" fill="#555" font-size="11">2x MULTADDALU18X18</text>
+    <text x="252" y="218" fill="#555" font-size="11">(16x16 + 16x16 each)</text>
+    <text x="252" y="240" fill="#555" font-size="11">full precision, 33 bit</text>
+  </g>
+  <path d="M440,180 L488,180" stroke="#333" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="470" y="173" font-size="12" font-weight="bold">t</text>
+
+  <!-- s2 -->
+  <rect x="490" y="62" width="180" height="193" rx="3" fill="#fff8ee" stroke="#e07b00" stroke-width="1.4"/>
+  <g font-size="12" fill="#333">
+    <text x="502" y="87" font-weight="bold">add / sub</text>
+    <text x="502" y="113">a*2^15 + t + 2^15</text>
+    <text x="502" y="133">a*2^15 - t + 2^15</text>
+    <text x="502" y="160" fill="#555" font-size="11">a is lined up with the 15</text>
+    <text x="502" y="175" fill="#555" font-size="11">fraction bits of the twiddle</text>
+    <text x="502" y="198" fill="#555" font-size="11">+2^15 = round to nearest</text>
+    <text x="502" y="221" fill="#555" font-size="11">34 bit, can't overflow</text>
+  </g>
+  <path d="M670,160 L718,160" stroke="#333" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- s3 -->
+  <rect x="720" y="62" width="170" height="193" rx="3" fill="#f0f7ee" stroke="#54a24b" stroke-width="1.4"/>
+  <g font-size="12" fill="#333">
+    <text x="732" y="87" font-weight="bold">scale + clip</text>
+    <text x="732" y="113">&gt;&gt;&gt; 16</text>
+    <text x="732" y="134" fill="#555" font-size="11">= /2^15 for the twiddle</text>
+    <text x="732" y="149" fill="#555" font-size="11">  and /2 for the stage</text>
+    <text x="732" y="176">clip to 16 bit</text>
+    <text x="732" y="198" fill="#555" font-size="11">-32768 .. 32767</text>
+    <text x="732" y="221" fill="#555" font-size="11">sets the sticky clip flag</text>
+  </g>
+  <path d="M890,160 L928,160" stroke="#333" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- write -->
+  <rect x="930" y="62" width="145" height="193" rx="3" fill="#eef7f6" stroke="#2a9d8f" stroke-width="1.4"/>
+  <g font-size="12" fill="#333">
+    <text x="942" y="87" font-weight="bold">write back</text>
+    <text x="942" y="113">y0 -&gt; where a was</text>
+    <text x="942" y="133">y1 -&gt; where b was</text>
+    <text x="942" y="160" fill="#555" font-size="11">same addresses as the</text>
+    <text x="942" y="175" fill="#555" font-size="11">read, so it's in place</text>
+    <text x="942" y="198" fill="#555" font-size="11">swapped back by bank</text>
+  </g>
+
+  <!-- timing -->
+  <text x="20" y="335" font-weight="bold">one butterfly per clock, and at a stage boundary (N = 256) the next stage starts right away</text>
+
+  <g font-size="11" fill="#555" text-anchor="middle">
+    <text x="245" y="362">t</text><text x="335" y="362">t+1</text><text x="425" y="362">t+2</text>
+    <text x="515" y="362">t+3</text><text x="605" y="362">t+4</text><text x="695" y="362">t+5</text>
+    <text x="785" y="362">t+6</text><text x="875" y="362">t+7</text><text x="965" y="362">t+8</text>
+  </g>
+  <g font-size="12" fill="#333">
+    <text x="20" y="387">stage s, bf 126</text>
+    <text x="20" y="417">stage s, bf 127</text>
+    <text x="20" y="447">stage s+1, bf 0</text>
+    <text x="20" y="477">stage s+1, bf 1</text>
+    <text x="20" y="507">stage s+1, bf 2</text>
+  </g>
+  <g font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">
+    <!-- row 0 starts at t -->
+    <rect x="202" y="372" width="86" height="22" rx="3" fill="#4c78a8"/><text x="245" y="387">read</text>
+    <rect x="292" y="372" width="86" height="22" rx="3" fill="#9467bd"/><text x="335" y="387">s1</text>
+    <rect x="382" y="372" width="86" height="22" rx="3" fill="#f58518"/><text x="425" y="387">s2</text>
+    <rect x="472" y="372" width="86" height="22" rx="3" fill="#54a24b"/><text x="515" y="387">s3</text>
+    <rect x="562" y="372" width="86" height="22" rx="3" fill="#2a9d8f"/><text x="605" y="387">write</text>
+    <!-- row 1 -->
+    <rect x="292" y="402" width="86" height="22" rx="3" fill="#4c78a8"/><text x="335" y="417">read</text>
+    <rect x="382" y="402" width="86" height="22" rx="3" fill="#9467bd"/><text x="425" y="417">s1</text>
+    <rect x="472" y="402" width="86" height="22" rx="3" fill="#f58518"/><text x="515" y="417">s2</text>
+    <rect x="562" y="402" width="86" height="22" rx="3" fill="#54a24b"/><text x="605" y="417">s3</text>
+    <rect x="652" y="402" width="86" height="22" rx="3" fill="#2a9d8f"/><text x="695" y="417">write</text>
+    <!-- row 2 -->
+    <rect x="382" y="432" width="86" height="22" rx="3" fill="#4c78a8"/><text x="425" y="447">read</text>
+    <rect x="472" y="432" width="86" height="22" rx="3" fill="#9467bd"/><text x="515" y="447">s1</text>
+    <rect x="562" y="432" width="86" height="22" rx="3" fill="#f58518"/><text x="605" y="447">s2</text>
+    <rect x="652" y="432" width="86" height="22" rx="3" fill="#54a24b"/><text x="695" y="447">s3</text>
+    <rect x="742" y="432" width="86" height="22" rx="3" fill="#2a9d8f"/><text x="785" y="447">write</text>
+    <!-- row 3 -->
+    <rect x="472" y="462" width="86" height="22" rx="3" fill="#4c78a8"/><text x="515" y="477">read</text>
+    <rect x="562" y="462" width="86" height="22" rx="3" fill="#9467bd"/><text x="605" y="477">s1</text>
+    <rect x="652" y="462" width="86" height="22" rx="3" fill="#f58518"/><text x="695" y="477">s2</text>
+    <rect x="742" y="462" width="86" height="22" rx="3" fill="#54a24b"/><text x="785" y="477">s3</text>
+    <rect x="832" y="462" width="86" height="22" rx="3" fill="#2a9d8f"/><text x="875" y="477">write</text>
+    <!-- row 4 -->
+    <rect x="562" y="492" width="86" height="22" rx="3" fill="#4c78a8"/><text x="605" y="507">read</text>
+    <rect x="652" y="492" width="86" height="22" rx="3" fill="#9467bd"/><text x="695" y="507">s1</text>
+    <rect x="742" y="492" width="86" height="22" rx="3" fill="#f58518"/><text x="785" y="507">s2</text>
+    <rect x="832" y="492" width="86" height="22" rx="3" fill="#54a24b"/><text x="875" y="507">s3</text>
+    <rect x="922" y="492" width="86" height="22" rx="3" fill="#2a9d8f"/><text x="965" y="507">write</text>
+  </g>
+  <line x1="380" y1="368" x2="380" y2="520" stroke="#d33" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <g font-size="11.5" fill="#333">
+    <text x="20" y="545">bf 0 of stage s+1 reads while bf 126 / 127 are still in the pipe. that's fine here: they write the top of memory (e.g. 252..255 in stage 0),</text>
+    <text x="20" y="563">bf 0..2 read near the bottom. for N &lt;= 16 the two overlap, so small sizes wait 4 clocks between stages instead. fft_model.hazards() checks every N.</text>
+  </g>
+</svg>

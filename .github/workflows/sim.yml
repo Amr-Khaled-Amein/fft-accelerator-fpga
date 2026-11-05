@@ -1,0 +1,13 @@
+name: sim
+
+on: [push, pull_request]
+
+jobs:
+  regression:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: install icarus + numpy
+        run: sudo apt-get update && sudo apt-get install -y iverilog python3-numpy
+      - name: run tests (model, directed, 200 random, size sweep, uart top level, mutants)
+        run: python3 tools/run_tests.py --random 200
